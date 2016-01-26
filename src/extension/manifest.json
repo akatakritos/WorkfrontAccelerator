@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2,
+    "name": "Workfront Accelerator",
+    "version": "0.1",
+    "description" : "Adds features to Workfront",
+    "author": "Matt Burke <git@mattburkedev.com>",
+    "content_scripts": [
+        {
+            "matches": [
+                "https://lockton.attask-ondemand.com/people"
+            ],
+            "js": [
+                "jquery-2.2.0.min.js",
+                "showsubtasks.js"
+            ]
+        }
+    ]
+}
