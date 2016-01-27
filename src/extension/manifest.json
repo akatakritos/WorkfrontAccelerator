@@ -1,13 +1,14 @@
 {
     "manifest_version": 2,
     "name": "Workfront Accelerator",
-    "version": "0.1",
+    "version": "0.2",
     "description" : "Adds features to Workfront",
     "author": "Matt Burke <git@mattburkedev.com>",
     "content_scripts": [
         {
             "matches": [
                 "https://*.attask-ondemand.com/people",
+                "https://*.attask-ondemand.com/iteration/view?ID=*"
             ],
             "js": [
                 "jquery-2.2.0.min.js",

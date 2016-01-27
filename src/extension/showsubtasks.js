@@ -3,11 +3,34 @@
 (function(){
     var $ = jQuery;
 
-    function loadSubtasks(iterationId) {
+    var debugging = false;
 
-        var $hidden = $("input[name='teams']");
-        var teamId = $hidden.val();
-        console.log(teamId);
+    var debug = {
+        log: function(s) {
+            if (debugging) {
+                console.log(s);
+            }
+        },
+
+        warn: function(s) {
+            console.warn("WorkfrontAccelerator: " + s);
+        }
+
+    };
+
+    function loadSubtasks(iterationId, teamId) {
+
+        debug.log("teamid: " + teamId);
+
+        if (!teamId) {
+            debug.warn("Could not find a team id. No subtasks can be shown.");
+            return;
+        }
+
+        if (!iterationId) {
+            debug.warn("Could not find an iteration id. No subtasks can be shown.");
+            return;
+        }
 
         var url = "/attask/api-internal/TASK/search";
 
@@ -25,10 +48,9 @@
        var listTemplate = "<li class='sub-task'>    <input type='checkbox' autocomplete='off' value='sub-task' name='check-sub-task' class='check-sub-task' id='check_@ID'>     <label class='name' title='@NAME' for='check_@ID'>      <span></span>       <a href='/task/view?ID=@ID&amp;activeTab=tabs-task-updates'>@NAME</a>   </label> </li>";
 
        $.get(url, data).success(function(result) {
-           console.log(result);
+           console.log("WorkfrontAccelerator StoryList", result);
 
            result.data.forEach(function(story) {
-               console.log(story.ID);
 
                var $card = $("div.story[data-objid='" + story.ID + "']");
 
@@ -60,7 +82,12 @@
        });
     }
 
+    function parseIdFromUrl(url) {
+        return url.match(/[a-f0-9]+$/)[0];
+    }
+
     function waitForIterationId() {
+
         var $h3 = $("h3.position-tl a");
         if ($h3.length == 0) {
             setTimeout(waitForIterationId, 250);
@@ -68,10 +95,41 @@
         }
 
         var href = $h3.attr("href");
-        var iterationId=href.match(/[a-f0-9]+$/)[0];
+        var iterationId = parseIdFromUrl(href);
 
-        loadSubtasks(iterationId);
+        var $hidden = $("input[name='teams']");
+        var teamId = $hidden.val();
+
+        loadSubtasks(iterationId, teamId);
     }
 
-    waitForIterationId();
+    function waitForStoryBoard() {
+
+        if ($("div.story").length) {
+
+            debug.log("found a .story, loading subtasks");
+
+            var iterationId = parseIdFromUrl(window.location.search);
+            var $teamlink = $("a[href*='/team/view?ID']")
+            var teamId = parseIdFromUrl($teamlink.attr("href"));
+
+            loadSubtasks(iterationId, teamId);
+            return;
+        }
+
+        debug.log("didn't find a .story, try again in 250ms");
+        setTimeout(waitForStoryBoard, 250);
+
+    }
+
+    if (window.location.pathname === "/iteration/view") {
+
+        waitForStoryBoard();
+
+    } else {
+
+        waitForIterationId();
+
+    }
+
 })();
