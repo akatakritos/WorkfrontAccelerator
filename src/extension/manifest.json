@@ -7,7 +7,7 @@
     "content_scripts": [
         {
             "matches": [
-                "https://lockton.attask-ondemand.com/people"
+                "https://*.attask-ondemand.com/people",
             ],
             "js": [
                 "jquery-2.2.0.min.js",
