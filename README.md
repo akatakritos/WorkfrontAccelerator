@@ -2,6 +2,8 @@
 
 Adds some features to Workfront for developers.
 
+You can install it from the [Chrome Store](https://chrome.google.com/webstore/detail/workfront-accelerator/iiigogmdnmencfcpaljdjojlnhniahhk).
+
 ## Features
 
 ### Show subtasks on story board
